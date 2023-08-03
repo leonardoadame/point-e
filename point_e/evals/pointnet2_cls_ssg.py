@@ -85,10 +85,7 @@ class get_model(nn.Module):
         x = self.fc3(x)
         x = F.log_softmax(x, -1)
 
-        if features:
-            return x, l3_points, result_features
-        else:
-            return x, l3_points
+        return (x, l3_points, result_features) if features else (x, l3_points)
 
 
 class get_loss(nn.Module):
@@ -96,6 +93,4 @@ class get_loss(nn.Module):
         super(get_loss, self).__init__()
 
     def forward(self, pred, target, trans_feat):
-        total_loss = F.nll_loss(pred, target)
-
-        return total_loss
+        return F.nll_loss(pred, target)

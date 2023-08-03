@@ -131,7 +131,7 @@ class Transformer(nn.Module):
         self.n_ctx = n_ctx
         self.width = width
         self.layers = layers
-        init_scale = init_scale * math.sqrt(1.0 / width)
+        init_scale *= math.sqrt(1.0 / width)
         self.resblocks = nn.ModuleList(
             [
                 ResidualAttentionBlock(

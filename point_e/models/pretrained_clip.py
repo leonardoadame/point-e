@@ -26,7 +26,7 @@ class ImageCLIP(nn.Module):
     ):
         super().__init__()
 
-        assert clip_name in ["ViT-L/14", "ViT-B/32"]
+        assert clip_name in {"ViT-L/14", "ViT-B/32"}
 
         self.device = device
         self.ensure_used_params = ensure_used_params
@@ -45,24 +45,15 @@ class ImageCLIP(nn.Module):
 
     @property
     def feature_dim(self) -> int:
-        if self.clip_name == "ViT-L/14":
-            return 768
-        else:
-            return 512
+        return 768 if self.clip_name == "ViT-L/14" else 512
 
     @property
     def grid_size(self) -> int:
-        if self.clip_name == "ViT-L/14":
-            return 16
-        else:
-            return 7
+        return 16 if self.clip_name == "ViT-L/14" else 7
 
     @property
     def grid_feature_dim(self) -> int:
-        if self.clip_name == "ViT-L/14":
-            return 1024
-        else:
-            return 768
+        return 1024 if self.clip_name == "ViT-L/14" else 768
 
     def forward(
         self,
@@ -181,13 +172,10 @@ class ImageCLIP(nn.Module):
         :param xs: an iterable of images to embed.
         :return: a tensor of shape [N x C x L], where L = self.grid_size**2.
         """
+        extra_value = 0.0
         if self.ensure_used_params:
-            extra_value = 0.0
             for p in self.parameters():
                 extra_value = extra_value + p.mean() * 0.0
-        else:
-            extra_value = 0.0
-
         x = self.images_to_tensor(xs).to(self.clip_model.dtype)
 
         # https://github.com/openai/CLIP/blob/4d120f3ec35b30bd0f992f5d8af2d793aad98d2a/clip/model.py#L225

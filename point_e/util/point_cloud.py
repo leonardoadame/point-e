@@ -10,9 +10,7 @@ COLORS = frozenset(["R", "G", "B", "A"])
 
 
 def preprocess(data, channel):
-    if channel in COLORS:
-        return np.round(data * 255.0)
-    return data
+    return np.round(data * 255.0) if channel in COLORS else data
 
 
 @dataclass
@@ -142,8 +140,10 @@ class PointCloud:
         return PointCloud(coords=new_coords, channels=new_channels)
 
     def select_channels(self, channel_names: List[str]) -> np.ndarray:
-        data = np.stack([preprocess(self.channels[name], name) for name in channel_names], axis=-1)
-        return data
+        return np.stack(
+            [preprocess(self.channels[name], name) for name in channel_names],
+            axis=-1,
+        )
 
     def nearest_points(self, points: np.ndarray, batch_size: int = 16384) -> np.ndarray:
         """
