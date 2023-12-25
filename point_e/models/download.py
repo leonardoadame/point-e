@@ -46,10 +46,10 @@ def fetch_file_cached(
 
     response = requests.get(url, stream=True)
     size = int(response.headers.get("content-length", "0"))
-    with FileLock(local_path + ".lock"):
+    with FileLock(f"{local_path}.lock"):
         if progress:
             pbar = tqdm(total=size, unit="iB", unit_scale=True)
-        tmp_path = local_path + ".tmp"
+        tmp_path = f"{local_path}.tmp"
         with open(tmp_path, "wb") as f:
             for chunk in response.iter_content(chunk_size):
                 if progress:

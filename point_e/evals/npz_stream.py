@@ -119,9 +119,7 @@ class NpzStreamer:
 
 
 def _npz_paths_and_length(glob_path: str) -> Tuple[List[str], Optional[int]]:
-    # Match slice syntax like path[:100].
-    count_match = re.match("^(.*)\\[:([0-9]*)\\]$", glob_path)
-    if count_match:
+    if count_match := re.match("^(.*)\\[:([0-9]*)\\]$", glob_path):
         raw_path = count_match[1]
         max_count = int(count_match[2])
     else:

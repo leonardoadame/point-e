@@ -124,7 +124,7 @@ class SimplePerceiver(nn.Module):
         super().__init__()
         self.width = width
         self.layers = layers
-        init_scale = init_scale * math.sqrt(1.0 / width)
+        init_scale *= math.sqrt(1.0 / width)
         self.resblocks = nn.ModuleList(
             [
                 ResidualCrossAttentionBlock(

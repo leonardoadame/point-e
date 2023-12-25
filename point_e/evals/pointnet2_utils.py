@@ -33,7 +33,7 @@ import torch.nn.functional as F
 
 
 def timeit(tag, t):
-    print("{}: {}s".format(tag, time() - t))
+    print(f"{tag}: {time() - t}s")
     return time()
 
 
@@ -88,8 +88,7 @@ def index_points(points, idx):
     batch_indices = (
         torch.arange(B, dtype=torch.long).to(device).view(view_shape).repeat(repeat_shape)
     )
-    new_points = points[batch_indices, idx, :]
-    return new_points
+    return points[batch_indices, idx, :]
 
 
 def farthest_point_sample(xyz, npoint, deterministic=False):

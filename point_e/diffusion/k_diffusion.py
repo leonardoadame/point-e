@@ -50,22 +50,16 @@ class KarrasDenoiser:
         if noise is None:
             noise = th.randn_like(x_start)
 
-        terms = {}
-
         dims = x_start.ndim
         x_t = x_start + noise * append_dims(sigmas, dims)
         c_skip, c_out, _ = [append_dims(x, dims) for x in self.get_scalings(sigmas)]
         model_output, denoised = self.denoise(model, x_t, sigmas, **model_kwargs)
         target = (x_start - c_skip * x_t) / c_out
 
-        terms["mse"] = mean_flat((model_output - target) ** 2)
+        terms = {"mse": mean_flat((model_output - target) ** 2)}
         terms["xs_mse"] = mean_flat((denoised - x_start) ** 2)
 
-        if "vb" in terms:
-            terms["loss"] = terms["mse"] + terms["vb"]
-        else:
-            terms["loss"] = terms["mse"]
-
+        terms["loss"] = terms["mse"] + terms["vb"] if "vb" in terms else terms["mse"]
         return terms
 
     def denoise(self, model, x_t, sigmas, **model_kwargs):
@@ -165,7 +159,7 @@ def karras_sample_progressive(
     else:
         raise NotImplementedError
 
-    if guidance_scale != 0 and guidance_scale != 1:
+    if guidance_scale not in [0, 1]:
 
         def guided_denoiser(x_t, sigma):
             x_t = th.cat([x_t, x_t], dim=0)

@@ -44,10 +44,7 @@ class FIDStatistics:
         # product might be almost singular
         covmean, _ = linalg.sqrtm(sigma1.dot(sigma2), disp=False)
         if not np.isfinite(covmean).all():
-            msg = (
-                "fid calculation produces singular product; adding %s to diagonal of cov estimates"
-                % eps
-            )
+            msg = f"fid calculation produces singular product; adding {eps} to diagonal of cov estimates"
             warnings.warn(msg)
             offset = np.eye(sigma1.shape[0]) * eps
             covmean = linalg.sqrtm((sigma1 + offset).dot(sigma2 + offset))
@@ -56,7 +53,7 @@ class FIDStatistics:
         if np.iscomplexobj(covmean):
             if not np.allclose(np.diagonal(covmean).imag, 0, atol=1e-3):
                 m = np.max(np.abs(covmean.imag))
-                raise ValueError("Imaginary component {}".format(m))
+                raise ValueError(f"Imaginary component {m}")
             covmean = covmean.real
 
         tr_covmean = np.trace(covmean)
